@@ -1,405 +1,167 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Nova — New Tab</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
-  <style>
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
-    :root {
-      --glass-bg: rgba(255,255,255,0.07);
-      --glass-border: rgba(255,255,255,0.13);
-      --glass-blur: blur(18px);
-      --accent: #7EB8F7;
-      --accent2: #B48EF7;
-      --text: #e8eaf0;
-      --muted: rgba(232,234,240,0.45);
-      --sidebar-w: 64px;
-    }
-
-    html, body {
-      width: 100%; height: 100%; overflow: hidden;
-      font-family: 'DM Sans', sans-serif;
-      color: var(--text);
-      background: #0a0c14;
-    }
-
-    /* ── ANIMATED MESH GRADIENT BACKGROUND ── */
-    #mesh-bg {
-      position: fixed; inset: 0; z-index: 0;
-      background:
-        radial-gradient(ellipse 80% 60% at 20% 20%, #1a1060 0%, transparent 60%),
-        radial-gradient(ellipse 70% 80% at 80% 10%, #0d2a55 0%, transparent 55%),
-        radial-gradient(ellipse 60% 70% at 60% 80%, #12063a 0%, transparent 60%),
-        radial-gradient(ellipse 90% 50% at 10% 80%, #061830 0%, transparent 50%),
-        #08091a;
-      animation: meshPulse 12s ease-in-out infinite alternate;
-    }
-    @keyframes meshPulse {
-      0%   { filter: hue-rotate(0deg) brightness(1); }
-      50%  { filter: hue-rotate(15deg) brightness(1.07); }
-      100% { filter: hue-rotate(-10deg) brightness(0.95); }
-    }
-
-    /* floating orbs */
-    #mesh-bg::before, #mesh-bg::after {
-      content: '';
-      position: absolute; border-radius: 50%;
-      filter: blur(80px); opacity: 0.18;
-      animation: orbFloat 18s ease-in-out infinite alternate;
-    }
-    #mesh-bg::before {
-      width: 500px; height: 500px;
-      top: -100px; left: 10%;
-      background: radial-gradient(circle, #6a3dff, transparent 70%);
-    }
-    #mesh-bg::after {
-      width: 400px; height: 400px;
-      bottom: -80px; right: 15%;
-      background: radial-gradient(circle, #1e90ff, transparent 70%);
-      animation-delay: -9s;
-    }
-    @keyframes orbFloat {
-      0%   { transform: translate(0, 0) scale(1); }
-      100% { transform: translate(40px, 60px) scale(1.15); }
-    }
-
-    /* ── LAYOUT ── */
-    #app {
-      position: relative; z-index: 1;
-      display: flex; width: 100%; height: 100%;
-    }
-
-    /* ── LEFT SIDEBAR ── */
-    #sidebar {
-      width: var(--sidebar-w);
-      height: 100%;
-      display: flex; flex-direction: column;
-      align-items: center;
-      padding: 24px 0;
-      gap: 8px;
-      background: rgba(255,255,255,0.04);
-      border-right: 1px solid var(--glass-border);
-      backdrop-filter: var(--glass-blur);
-      -webkit-backdrop-filter: var(--glass-blur);
-      position: relative; z-index: 10;
-      flex-shrink: 0;
-    }
-
-    .sidebar-logo {
-      font-family: 'Syne', sans-serif;
-      font-weight: 700;
-      font-size: 13px;
-      letter-spacing: 0.12em;
-      color: var(--accent);
-      writing-mode: initial;
-      margin-bottom: 16px;
-      opacity: 0.9;
-    }
-
-    .sidebar-btn {
-      width: 42px; height: 42px;
-      border-radius: 12px;
-      background: transparent;
-      border: 1px solid transparent;
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer;
-      transition: background 0.2s, border-color 0.2s, transform 0.15s;
-      color: var(--muted);
-      position: relative;
-    }
-    .sidebar-btn:hover, .sidebar-btn.active {
-      background: var(--glass-bg);
-      border-color: var(--glass-border);
-      color: var(--text);
-      transform: scale(1.08);
-    }
-    .sidebar-btn svg { width: 20px; height: 20px; }
-
-    .sidebar-tip {
-      display: none;
-      position: absolute;
-      left: calc(var(--sidebar-w) + 6px);
-      top: 50%;
-      transform: translateY(-50%);
-      background: rgba(10,12,20,0.92);
-      border: 1px solid var(--glass-border);
-      padding: 5px 10px;
-      border-radius: 8px;
-      font-size: 12px;
-      white-space: nowrap;
-      color: var(--text);
-      pointer-events: none;
-      z-index: 999;
-    }
-    .sidebar-btn:hover .sidebar-tip { display: block; }
-
-    .sidebar-spacer { flex: 1; }
-
-    /* ── MAIN CONTENT ── */
-    #main {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 40px 60px;
-      gap: 40px;
-      overflow: hidden;
-    }
-
-    /* ── GREETING ── */
-    #greeting {
-      text-align: center;
-      animation: fadeUp 0.6s ease both;
-    }
-    #greeting h1 {
-      font-family: 'Syne', sans-serif;
-      font-size: clamp(28px, 3vw, 42px);
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      color: var(--text);
-    }
-    #greeting h1 span { color: var(--accent); }
-    #greeting p {
-      font-size: 14px;
-      color: var(--muted);
-      margin-top: 6px;
-    }
-
-    /* ── SEARCH BAR ── */
-    #search-wrap {
-      width: min(680px, 90%);
-      animation: fadeUp 0.6s 0.1s ease both;
-    }
-    #search-box {
-      width: 100%;
-      display: flex; align-items: center;
-      background: var(--glass-bg);
-      border: 1px solid var(--glass-border);
-      border-radius: 18px;
-      backdrop-filter: var(--glass-blur);
-      -webkit-backdrop-filter: var(--glass-blur);
-      padding: 14px 20px;
-      gap: 12px;
-      transition: border-color 0.25s, box-shadow 0.25s;
-    }
-    #search-box:focus-within {
-      border-color: rgba(126,184,247,0.45);
-      box-shadow: 0 0 0 3px rgba(126,184,247,0.08), 0 8px 32px rgba(0,0,0,0.3);
-    }
-    #search-icon { color: var(--muted); flex-shrink: 0; }
-    #search-input {
-      flex: 1;
-      background: transparent;
-      border: none; outline: none;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 16px;
-      color: var(--text);
-      caret-color: var(--accent);
-    }
-    #search-input::placeholder { color: var(--muted); }
-    #search-btn {
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      border: none; border-radius: 10px;
-      padding: 8px 18px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 13px; font-weight: 500;
-      color: #fff; cursor: pointer;
-      transition: opacity 0.2s, transform 0.15s;
-    }
-    #search-btn:hover { opacity: 0.85; transform: scale(1.04); }
-
-    /* ── QUICK LINKS GRID ── */
-    #quick-links {
-      width: min(680px, 90%);
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 14px;
-      animation: fadeUp 0.6s 0.2s ease both;
-    }
-    .ql-card {
-      background: var(--glass-bg);
-      border: 1px solid var(--glass-border);
-      border-radius: 16px;
-      backdrop-filter: var(--glass-blur);
-      -webkit-backdrop-filter: var(--glass-blur);
-      padding: 18px 10px 14px;
-      display: flex; flex-direction: column;
-      align-items: center; gap: 9px;
-      cursor: pointer;
-      text-decoration: none;
-      color: var(--text);
-      transition: background 0.2s, border-color 0.2s, transform 0.18s, box-shadow 0.2s;
-      position: relative; overflow: hidden;
-    }
-    .ql-card:hover {
-      background: rgba(255,255,255,0.11);
-      border-color: rgba(255,255,255,0.22);
-      transform: translateY(-3px);
-      box-shadow: 0 12px 36px rgba(0,0,0,0.35);
-    }
-    .ql-card::before {
-      content: '';
-      position: absolute; inset: 0;
-      background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, transparent 100%);
-      pointer-events: none;
-    }
-    .ql-icon {
-      width: 38px; height: 38px;
-      border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 20px;
-    }
-    .ql-name {
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--muted);
-      letter-spacing: 0.02em;
-    }
-
-    /* ── BOTTOM INFO BAR ── */
-    #infobar {
-      position: fixed;
-      bottom: 16px; right: 24px;
-      display: flex; gap: 20px;
-      font-size: 12px; color: var(--muted);
-      z-index: 5;
-      animation: fadeUp 0.6s 0.3s ease both;
-    }
-    #infobar span { opacity: 0.6; }
-
-    /* ── IDLE OVERLAY ── */
-    #idle-overlay {
-      display: none;
-      position: fixed; inset: 0; z-index: 9999;
-      background: rgba(5,6,12,0.96);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      flex-direction: column;
-      align-items: center; justify-content: center;
-      gap: 16px;
-      cursor: pointer;
-    }
-    #idle-overlay.show { display: flex; }
-    .idle-icon { font-size: 48px; opacity: 0.5; }
-    .idle-title {
-      font-family: 'Syne', sans-serif;
-      font-size: 22px; font-weight: 700;
-      letter-spacing: 0.12em;
-      color: var(--accent);
-    }
-    .idle-sub {
-      font-size: 13px; color: var(--muted);
-    }
-
-    /* ── ANIMATIONS ── */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(18px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Raleway:wght@300;400;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
 
-<div id="mesh-bg"></div>
+<!-- ░░ ANIMATED BACKGROUND ░░ -->
+<div id="bg-layer"></div>
+<div id="bg-overlay"></div>
 
-<div id="idle-overlay" id="idle-overlay" role="button" tabindex="0" aria-label="Click to resume">
-  <div class="idle-icon">🌙</div>
-  <div class="idle-title">NOVA IDLE: RAM RECOVERED</div>
-  <div class="idle-sub">Click or press any key to resume</div>
+<!-- ░░ IDLE OVERLAY ░░ -->
+<div id="idle-overlay" class="hidden">
+  <div class="idle-card">
+    <div class="idle-moon">🌙</div>
+    <h2>NOVA IDLE</h2>
+    <p>RAM Purged · Content Suspended</p>
+    <button id="idle-resume">Resume Session</button>
+  </div>
 </div>
 
-<div id="app">
+<!-- ░░ BACKGROUND PICKER MODAL ░░ -->
+<div id="bg-modal" class="hidden">
+  <div class="modal-card">
+    <h3>Change Background</h3>
+    <div class="bg-options">
+      <button class="bg-swatch" data-bg="aurora"    style="background:linear-gradient(135deg,#fce4ec,#e3f2fd,#f3e5f5)">Aurora</button>
+      <button class="bg-swatch" data-bg="midnight"  style="background:linear-gradient(135deg,#0a0c1a,#1a1060,#0d2a55)">Midnight</button>
+      <button class="bg-swatch" data-bg="peach"     style="background:linear-gradient(135deg,#ffdde1,#ee9ca7)">Peach</button>
+      <button class="bg-swatch" data-bg="forest"    style="background:linear-gradient(135deg,#134e5e,#71b280)">Forest</button>
+      <button class="bg-swatch" data-bg="slate"     style="background:linear-gradient(135deg,#232526,#414345)">Slate</button>
+      <button class="bg-swatch" data-bg="lavender"  style="background:linear-gradient(135deg,#c9d6ff,#e2e2e2)">Lavender</button>
+      <button class="bg-swatch" data-bg="sunset"    style="background:linear-gradient(135deg,#f7971e,#ffd200)">Sunset</button>
+      <button class="bg-swatch" data-bg="ocean"     style="background:linear-gradient(135deg,#2980b9,#6dd5fa,#ffffff)">Ocean</button>
+    </div>
+    <label class="custom-url-label">
+      Or paste an image URL:
+      <input id="custom-bg-input" type="url" placeholder="https://..."/>
+    </label>
+    <div class="modal-actions">
+      <button id="apply-bg-btn">Apply</button>
+      <button id="close-modal-btn">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ░░ MAIN SHELL ░░ -->
+<div id="shell">
 
   <!-- LEFT SIDEBAR -->
   <nav id="sidebar">
-    <div class="sidebar-logo">N</div>
+    <div class="sidebar-brand">N</div>
 
-    <button class="sidebar-btn active" id="btn-home" title="Home">
-      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-        <path stroke-linecap="round" stroke-linejoin="round"
-          d="M3 12l2-2m0 0l7-7 7 7m-9 2v8m4-8v8M5 10v10h4V14h6v6h4V10"/>
-      </svg>
-      <span class="sidebar-tip">Home</span>
-    </button>
-
-    <button class="sidebar-btn" id="btn-bookmarks" title="Bookmarks">
-      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-        <path stroke-linecap="round" stroke-linejoin="round"
-          d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
-      </svg>
-      <span class="sidebar-tip">Bookmarks</span>
-    </button>
-
-    <button class="sidebar-btn" id="btn-history" title="History">
-      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-        <path stroke-linecap="round" stroke-linejoin="round"
-          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-      </svg>
-      <span class="sidebar-tip">History</span>
-    </button>
+    <div class="sidebar-group top">
+      <button class="sb-btn active" id="btn-home" data-tip="Home">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M3 12l2-2m0 0l7-7 7 7M5 10v10h4v-6h6v6h4V10"/>
+        </svg>
+      </button>
+      <button class="sb-btn" id="btn-bookmarks" data-tip="Bookmarks">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+        </svg>
+      </button>
+      <button class="sb-btn" id="btn-history" data-tip="History">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <circle cx="12" cy="12" r="9"/>
+          <path stroke-linecap="round" d="M12 7v5l3 3"/>
+        </svg>
+      </button>
+      <button class="sb-btn" id="btn-newtab" data-tip="New Tab">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <rect x="3" y="3" width="18" height="18" rx="3"/>
+          <path stroke-linecap="round" d="M12 8v8M8 12h8"/>
+        </svg>
+      </button>
+    </div>
 
     <div class="sidebar-spacer"></div>
 
-    <button class="sidebar-btn" id="btn-settings" title="Settings">
-      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-        <path stroke-linecap="round" stroke-linejoin="round"
-          d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0
-            a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826
-            2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426
-            1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94
-            1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572
-            1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724
-            0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724
-            1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924
-            0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826
-            -3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
-        <path stroke-linecap="round" stroke-linejoin="round"
-          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-      </svg>
-      <span class="sidebar-tip">Settings</span>
-    </button>
+    <div class="sidebar-group bottom">
+      <button class="sb-btn" id="btn-bg" data-tip="Background">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <circle cx="12" cy="12" r="9"/>
+          <path stroke-linecap="round" d="M12 3a9 9 0 010 18"/>
+          <circle cx="12" cy="12" r="3"/>
+        </svg>
+      </button>
+      <button class="sb-btn" id="btn-settings" data-tip="Settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <circle cx="12" cy="12" r="3"/>
+          <path stroke-linecap="round"
+            d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83
+               2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33
+               1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65
+               0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83
+               -2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51
+               -1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0
+               00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65
+               0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65
+               1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0
+               012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0
+               001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>
+        </svg>
+      </button>
+    </div>
   </nav>
 
-  <!-- MAIN -->
+  <!-- MAIN AREA -->
   <main id="main">
 
-    <div id="greeting">
-      <h1 id="greeting-text">Good morning, <span>Nova</span></h1>
-      <p id="date-text"></p>
+    <!-- TAB BAR -->
+    <div id="tab-bar">
+      <div id="tab-list"></div>
+      <button id="add-tab-btn" title="New Tab">＋</button>
     </div>
 
-    <div id="search-wrap">
-      <div id="search-box">
-        <span id="search-icon">
-          <svg width="18" height="18" fill="none" viewBox="0 0 24 24"
-            stroke="currentColor" stroke-width="2">
-            <circle cx="11" cy="11" r="8"/>
-            <path stroke-linecap="round" d="M21 21l-4.35-4.35"/>
-          </svg>
-        </span>
-        <input id="search-input" type="text"
-          placeholder="Search the web…" autocomplete="off" autofocus />
-        <button id="search-btn">Search</button>
+    <!-- TAB CONTENT VIEWPORT -->
+    <div id="viewport">
+
+      <!-- HOME SCREEN (tab 0) -->
+      <div class="tab-page active" id="page-home">
+
+        <div id="greeting-wrap">
+          <h1 id="greeting-text">Good morning</h1>
+          <p id="date-text"></p>
+        </div>
+
+        <!-- SEARCH -->
+        <div id="search-wrap">
+          <div id="search-box">
+            <span class="s-engine-icon" id="engine-toggle" title="Switch engine">🔍</span>
+            <input id="search-input" type="text"
+              placeholder="Search with DuckDuckGo or enter URL…" autocomplete="off" autofocus/>
+            <button id="search-btn">Go</button>
+          </div>
+          <div id="engine-label">DuckDuckGo · Private</div>
+        </div>
+
+        <!-- QUICK LINKS -->
+        <div id="quick-grid"></div>
+
       </div>
+
     </div>
 
-    <div id="quick-links">
-      <!-- JS will render these -->
+    <!-- STATUS BAR -->
+    <div id="statusbar">
+      <span id="clock"></span>
+      <span id="idle-countdown"></span>
     </div>
 
   </main>
 </div>
 
-<div id="infobar">
-  <span id="clock-display"></span>
-</div>
-
-<script src="engine.js"></script>
+<script src="app.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
