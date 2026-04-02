@@ -1,23 +1,22 @@
 {
   "manifest_version": 3,
   "name": "Nova Browser",
-  "version": "1.0.0",
-  "description": "A glassmorphic new tab experience by UU Production.",
+  "version": "2.0.0",
+  "description": "Opera One-style new tab — UU Production",
   "chrome_url_overrides": {
     "newtab": "index.html"
   },
   "permissions": [
+    "storage",
     "bookmarks",
     "history",
-    "storage",
-    "topSites"
+    "tabs"
   ],
-  "icons": {
-    "16": "icons/icon16.png",
-    "48": "icons/icon48.png",
-    "128": "icons/icon128.png"
-  },
+  "host_permissions": [],
   "action": {
     "default_title": "Nova Browser"
+  },
+  "content_security_policy": {
+    "extension_pages": "default-src 'self'; img-src 'self' https: data:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'self'"
   }
 }
