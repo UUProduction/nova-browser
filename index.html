@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Nova — New Tab</title>
+  <title>Nova Browser</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Raleway:wght@300;400;600&display=swap" rel="stylesheet"/>
@@ -11,33 +11,32 @@
 </head>
 <body>
 
-<!-- ░░ ANIMATED BACKGROUND ░░ -->
+<!-- ░░ BACKGROUND ░░ -->
 <div id="bg-layer"></div>
-<div id="bg-overlay"></div>
 
 <!-- ░░ IDLE OVERLAY ░░ -->
 <div id="idle-overlay" class="hidden">
   <div class="idle-card">
     <div class="idle-moon">🌙</div>
     <h2>NOVA IDLE</h2>
-    <p>RAM Purged · Content Suspended</p>
+    <p>RAM Purged · Iframe Suspended</p>
     <button id="idle-resume">Resume Session</button>
   </div>
 </div>
 
-<!-- ░░ BACKGROUND PICKER MODAL ░░ -->
+<!-- ░░ BACKGROUND MODAL ░░ -->
 <div id="bg-modal" class="hidden">
   <div class="modal-card">
     <h3>Change Background</h3>
     <div class="bg-options">
-      <button class="bg-swatch" data-bg="aurora"    style="background:linear-gradient(135deg,#fce4ec,#e3f2fd,#f3e5f5)">Aurora</button>
-      <button class="bg-swatch" data-bg="midnight"  style="background:linear-gradient(135deg,#0a0c1a,#1a1060,#0d2a55)">Midnight</button>
-      <button class="bg-swatch" data-bg="peach"     style="background:linear-gradient(135deg,#ffdde1,#ee9ca7)">Peach</button>
-      <button class="bg-swatch" data-bg="forest"    style="background:linear-gradient(135deg,#134e5e,#71b280)">Forest</button>
-      <button class="bg-swatch" data-bg="slate"     style="background:linear-gradient(135deg,#232526,#414345)">Slate</button>
-      <button class="bg-swatch" data-bg="lavender"  style="background:linear-gradient(135deg,#c9d6ff,#e2e2e2)">Lavender</button>
-      <button class="bg-swatch" data-bg="sunset"    style="background:linear-gradient(135deg,#f7971e,#ffd200)">Sunset</button>
-      <button class="bg-swatch" data-bg="ocean"     style="background:linear-gradient(135deg,#2980b9,#6dd5fa,#ffffff)">Ocean</button>
+      <button class="bg-swatch selected" data-bg="aurora"   style="background:linear-gradient(135deg,#fce4ec,#e3f2fd,#f3e5f5)">Aurora</button>
+      <button class="bg-swatch" data-bg="midnight" style="background:linear-gradient(135deg,#0a0c1a,#1a1060,#0d2a55);color:#aaf">Midnight</button>
+      <button class="bg-swatch" data-bg="peach"    style="background:linear-gradient(135deg,#ffdde1,#ee9ca7)">Peach</button>
+      <button class="bg-swatch" data-bg="forest"   style="background:linear-gradient(135deg,#134e5e,#71b280);color:#dff">Forest</button>
+      <button class="bg-swatch" data-bg="slate"    style="background:linear-gradient(135deg,#232526,#414345);color:#ccc">Slate</button>
+      <button class="bg-swatch" data-bg="lavender" style="background:linear-gradient(135deg,#c9d6ff,#e2e2e2)">Lavender</button>
+      <button class="bg-swatch" data-bg="sunset"   style="background:linear-gradient(135deg,#f7971e,#ffd200)">Sunset</button>
+      <button class="bg-swatch" data-bg="ocean"    style="background:linear-gradient(135deg,#2980b9,#6dd5fa)">Ocean</button>
     </div>
     <label class="custom-url-label">
       Or paste an image URL:
@@ -50,36 +49,44 @@
   </div>
 </div>
 
-<!-- ░░ MAIN SHELL ░░ -->
+<!-- ░░ SHELL ░░ -->
 <div id="shell">
 
-  <!-- LEFT SIDEBAR -->
+  <!-- SIDEBAR -->
   <nav id="sidebar">
     <div class="sidebar-brand">N</div>
 
     <div class="sidebar-group top">
       <button class="sb-btn active" id="btn-home" data-tip="Home">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-          <path stroke-linecap="round" stroke-linejoin="round"
-            d="M3 12l2-2m0 0l7-7 7 7M5 10v10h4v-6h6v6h4V10"/>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10h4v-6h6v6h4V10"/>
+        </svg>
+      </button>
+      <button class="sb-btn" id="btn-back" data-tip="Back">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M15 18l-6-6 6-6"/>
+        </svg>
+      </button>
+      <button class="sb-btn" id="btn-forward" data-tip="Forward">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 18l6-6-6-6"/>
+        </svg>
+      </button>
+      <button class="sb-btn" id="btn-reload" data-tip="Reload">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 4v5h5M20 20v-5h-5"/>
+          <path d="M4.06 15a8 8 0 101.34-6.55"/>
         </svg>
       </button>
       <button class="sb-btn" id="btn-bookmarks" data-tip="Bookmarks">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-          <path stroke-linecap="round" stroke-linejoin="round"
-            d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
         </svg>
       </button>
       <button class="sb-btn" id="btn-history" data-tip="History">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="9"/>
-          <path stroke-linecap="round" d="M12 7v5l3 3"/>
-        </svg>
-      </button>
-      <button class="sb-btn" id="btn-newtab" data-tip="New Tab">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-          <rect x="3" y="3" width="18" height="18" rx="3"/>
-          <path stroke-linecap="round" d="M12 8v8M8 12h8"/>
+          <path d="M12 7v5l3 3"/>
         </svg>
       </button>
     </div>
@@ -88,77 +95,75 @@
 
     <div class="sidebar-group bottom">
       <button class="sb-btn" id="btn-bg" data-tip="Background">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-          <circle cx="12" cy="12" r="9"/>
-          <path stroke-linecap="round" d="M12 3a9 9 0 010 18"/>
-          <circle cx="12" cy="12" r="3"/>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="3"/>
+          <circle cx="8.5" cy="8.5" r="1.5"/>
+          <path d="M21 15l-5-5L5 21"/>
         </svg>
       </button>
       <button class="sb-btn" id="btn-settings" data-tip="Settings">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="3"/>
-          <path stroke-linecap="round"
-            d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83
-               2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33
-               1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65
-               0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83
-               -2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51
-               -1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0
-               00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65
-               0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65
-               1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0
-               012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0
-               001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>
+          <path d="M12 2v2m0 16v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M2 12h2m16 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
         </svg>
       </button>
     </div>
   </nav>
 
-  <!-- MAIN AREA -->
-  <main id="main">
+  <!-- MAIN COLUMN -->
+  <div id="main">
 
-    <!-- TAB BAR -->
-    <div id="tab-bar">
-      <div id="tab-list"></div>
-      <button id="add-tab-btn" title="New Tab">＋</button>
+    <!-- ADDRESS / TOOLBAR -->
+    <div id="toolbar">
+      <div id="url-bar-wrap">
+        <!-- Engine toggle icon -->
+        <button id="engine-toggle" class="engine-btn" title="Switch search engine"></button>
+        <!-- Address input -->
+        <input id="url-input" type="text" placeholder="Search or enter address…" autocomplete="off" spellcheck="false"/>
+        <!-- Go / Stop -->
+        <button id="go-btn">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+            <circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/>
+          </svg>
+        </button>
+      </div>
+      <div id="engine-label-bar">DuckDuckGo · Private</div>
     </div>
 
-    <!-- TAB CONTENT VIEWPORT -->
-    <div id="viewport">
+    <!-- HOME SCREEN -->
+    <div id="home-screen">
 
-      <!-- HOME SCREEN (tab 0) -->
-      <div class="tab-page active" id="page-home">
-
-        <div id="greeting-wrap">
-          <h1 id="greeting-text">Good morning</h1>
-          <p id="date-text"></p>
-        </div>
-
-        <!-- SEARCH -->
-        <div id="search-wrap">
-          <div id="search-box">
-            <span class="s-engine-icon" id="engine-toggle" title="Switch engine">🔍</span>
-            <input id="search-input" type="text"
-              placeholder="Search with DuckDuckGo or enter URL…" autocomplete="off" autofocus/>
-            <button id="search-btn">Go</button>
-          </div>
-          <div id="engine-label">DuckDuckGo · Private</div>
-        </div>
-
-        <!-- QUICK LINKS -->
-        <div id="quick-grid"></div>
-
+      <div id="greeting-wrap">
+        <h1 id="greeting-text">Good morning</h1>
+        <p id="date-text"></p>
       </div>
 
+      <!-- RECENT SEARCHES -->
+      <div id="recents-wrap" class="hidden">
+        <div class="section-label">Recent</div>
+        <div id="recents-list"></div>
+      </div>
+
+      <!-- QUICK LINKS GRID -->
+      <div id="quick-grid"></div>
+
     </div>
+
+    <!-- NOVA VIEWPORT IFRAME -->
+    <iframe id="nova-viewport" class="hidden"
+      sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-pointer-lock allow-top-navigation"
+      allow="fullscreen; autoplay"
+      src="about:blank">
+    </iframe>
 
     <!-- STATUS BAR -->
     <div id="statusbar">
-      <span id="clock"></span>
+      <span id="status-url">Nova Browser · UU Production</span>
       <span id="idle-countdown"></span>
+      <span id="clock"></span>
     </div>
 
-  </main>
+  </div>
 </div>
 
 <script src="app.js"></script>
